@@ -15,33 +15,14 @@ Variables.AddItemToList Item: 89 List: List
 Variables.AddItemToList Item: 41 List: List
 Variables.AddItemToList Item: 21 List: List
 Variables.RemoveDuplicateItemsFromList List: List IgnoreCase: False
-Scripting.RunJavascript JavascriptCode: $'''let lista = pegaVariavel(%List%);
-
-lista.sort();
-
-setaVariavel(lista);
-
-console.log(%ListaOrdenadaJS%)''' ScriptOutput=> ListaOrdenadaJS
-DISABLE Scripting.RunPowershellScript Script: $'''%List% = Get-Variable -Name \"lista\" -ValueOnly
-$lista_ordenada = %List% | Sort-Object
-Set-Variable -Name \"lista_ordenada\" -Value $lista_ordenada''' ScriptOutput=> ListaOrdenadaPS
-DISABLE Scripting.RunPythonScript PythonCode: $'''lista = obterVariavel(%List%)
-%ListaOrdenadaPhyton% = sorted(lista)
-setarVariavel(\"lista_ordenada\", %ListaOrdenadaPhyton%)''' ScriptOutput=> ListaOrdenadaPhyton
-DISABLE Scripting.RunVBScript VBScriptCode: $'''Dim lista
-lista = pegaVariavel(%List%)
-Call BubbleSort(lista)
-setaVariavel(\"lista_ordenada\", lista)
-
-Function BubbleSort(list)
-    Dim i, j, temp
-    For i = 0 To UBound(list) - 1
-        For j = i + 1 To UBound(list)
-            If list(i) > list(j) Then
-                temp = list(i)
-                list(i) = list(j)
-                list(j) = temp
-            End If
-        Next
-    Next
-End Function''' ScriptOutput=> ListaOrdenadaVB
+SET numberListLen TO List.Count
+LOOP i FROM 0 TO numberListLen - 1 STEP 1
+    LOOP j FROM i + 1 TO numberListLen - 1 STEP 1
+        IF List[i] > List[j] THEN
+            SET numberAux TO List[i]
+            SET List[i] TO List[j]
+            SET List[j] TO numberAux
+        END
+    END
+END
+File.WriteText File: $'''C:\\Users\\Username\\Desktop\\Saida.txt''' TextToWrite: List AppendNewLine: False IfFileExists: File.IfFileExists.Overwrite Encoding: File.FileEncoding.Unicode
